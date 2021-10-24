@@ -10,9 +10,11 @@ Daniela Esparza Espinosa
 #define ISDIGIT (character>='0' &&  character<='9') 
 #define ISMAYUS (character>='A' && character<='Z')
 #define ISMINUS (character>='a' && character<= 'z')
+#define ISNOTPARENTHESIS (character!='(' && character!= ')')
 
 //FUNCTIONS
 BOOL isOperand(char character);
+BOOL isOpenParenthesis(char character);
 void showPostfix();
 void addRemainingOperators();
 int getPrecedence(char operator);
@@ -42,7 +44,9 @@ int main()
 			}
 			else
 			{
-				if (stack_isempty(operators))
+				if (isOpenParenthesis(expresion[i][j]))
+					stack_push(operators,char_create(expresion[i][j]));
+				else if (stack_isempty(operators))
 					stack_push(operators,char_create(expresion[i][j]));
 				else
 				{
@@ -53,7 +57,7 @@ int main()
 		addRemainingOperators();
 		printf("Expresion posfija: ");
 		showPostfix();
-		printf("\n");
+		printf("\n\n");
 	}
 
 }
@@ -70,7 +74,8 @@ void showPostfix()
 	while(!queue_isempty(postfix))
 	{
 		aux=queue_poll(postfix);
-		printf("%c",char_val(aux));
+		if (char_val(aux)!='(' && char_val(aux)!=')')
+			printf("%c",char_val(aux));
 	}
 }
 void addRemainingOperators()
@@ -83,9 +88,7 @@ void addRemainingOperators()
 }
 int getPrecedence(char operator)
 {
-	if (operator=='(')
-		return 3;
-	else if (operator=='*' || operator== '/')
+	if (operator=='*' || operator== '/')
 		return 2;
 	else if (operator=='+' || operator=='-')
 		return 1;
@@ -112,9 +115,16 @@ void hasHigherPrecedence(char operator)
 
 BOOL isOperand(char character)
 {
-	if (ISDIGIT || ISMAYUS || ISMINUS )
+	if ((ISDIGIT || ISMAYUS || ISMINUS ) && ISNOTPARENTHESIS)
 		return 1;
 	else
 		return 0;
 }
 
+BOOL isOpenParenthesis(char character)
+{
+	if (character=='(')
+		return 1;
+	else
+		return 0;
+}
