@@ -62,6 +62,8 @@ int main()
 		scanf("%d",&opcionMenu);
 	}
 	printf("SALIENDO...\n");
+	stack_destroy(operators);
+	queue_destroy(postfix);
 }
 
 
